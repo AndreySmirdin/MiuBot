@@ -12,30 +12,35 @@ logger = logging.getLogger()
 with open('token.txt', 'r') as f:
     TOKEN = json.load(f)['token']
 
-URL = "https://api.telegram.org/bot{}/".format(TOKEN)
+GET_UPDATES = "getUpdates"
+SEND_MESSAGE = "sendMessage"
 
 
-def send_request(url, params={}):
+def send_request(method_name, params={}):
+    url = "https://api.telegram.org/bot{}/".format(TOKEN) + method_name
     response = requests.get(url, params)
     content = json.loads(response.content.decode("utf8"))
     if not content['ok']:
-        logger.error(f"Request to {url} returned {content}")
+        raise RuntimeError(url, content)
     return content
 
 
 def get_updates(update_id):
-    url = URL + "getUpdates"
-    params = {'allowed_updates': 'message'}
+    params = {'allowed_updates': 'message',
+              'timeout': 10}  # Allows to use long polling
     if update_id is not None:
         params['offset'] = update_id
-    response = send_request(url, params)
+    response = send_request(GET_UPDATES, params)
     return response['result']
 
 
 def send_message(text, chat_id):
     logger.info(f"Answered to {chat_id}")
-    url = URL + "sendMessage?text={}&chat_id={}".format(text, chat_id)
-    send_request(url)
+    try:
+        send_request(SEND_MESSAGE, params={"text": text,
+                                           "chat_id": chat_id})
+    except:
+        logger.info(f"Couldn't send a message to user {chat_id}")
 
 
 def process_new_message(message):
@@ -49,11 +54,10 @@ def process_new_message(message):
             send_message(emoji.emojize(':thumbs_down:'), chat_id)
         if text == '/miu':
             send_message(emoji.emojize(':thumbs_up:'), chat_id)
-        return
 
-    if "миу" in text:
+    elif "миу" in text:
         send_message("миу", chat_id)
-    if "мяу" in text:
+    elif "мяу" in text:
         send_message('не "мяу", а "миу"!', chat_id)
-    if "гав" in text:
+    elif "гав" in text:
         send_message('не "гав", а "/woof"! ', chat_id)
