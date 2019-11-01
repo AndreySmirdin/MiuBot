@@ -13,7 +13,8 @@ if(CURL_FOUND)
 endif()
 
 add_subdirectory(cpr)
+
 include_directories(${CPR_INCLUDE_DIRS})
 
-add_executable(${PROJECT} main.cpp)
+add_executable(${PROJECT} main.cpp json.h)
 target_link_libraries(${PROJECT} ${CPR_LIBRARIES})
