@@ -1,1 +1,1 @@
-{"token": "805829105:AAHYluPLNmefnDXT_I0tEjTb-EuiJ3iSERE"}
+{"token": "PUT YOUR TOKEN HERE"}
