@@ -69,7 +69,6 @@ int main() {
     std::string tempToken((std::istreambuf_iterator<char>(tokenFile)),
                           std::istreambuf_iterator<char>());
     TOKEN = json::parse(tempToken)["token"];
-    std::cout << TOKEN;
 
     int lastUpdate = 0;
     while (true) {
