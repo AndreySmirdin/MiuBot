@@ -80,7 +80,7 @@ int main() {
                 processNewMessage(update);
             }
         } catch (std::exception &e) {
-            std::cout << "Unable to get updates: " << e.what() << "\n";
+            std::cerr << "Unable to get updates: " << e.what() << "\n";
             sleep(1);
         }
     }
